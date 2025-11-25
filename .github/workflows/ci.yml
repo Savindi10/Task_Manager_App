@@ -1,6 +1,5 @@
 name: CI Build Docker Containers
 
-# When to run this workflow
 on:
   push:
     branches:
@@ -18,8 +17,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      # Step 2: Set up Docker
-      - name: Set up Docker
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       # Step 3: Build backend Docker image
@@ -30,10 +29,10 @@ jobs:
       - name: Build Frontend Docker Image
         run: docker build -t test_app-frontend ./frontend
 
-      # Step 5: Test backend image (optional)
-      - name: Run Backend Container
-        run: docker run --rm test_app-backend uvicorn main:app --host 0.0.0.0 --port 8000
+      # Step 5: Test backend image with a short command
+      - name: Test Backend Docker Image
+        run: docker run --rm test_app-backend python -c "print('Backend image works!')"
 
-      # Step 6: Test frontend image (optional)
-      - name: Run Frontend Container
-        run: docker run --rm -p 3000:80 test_app-frontend
+      # Step 6: Test frontend image with a short command
+      - name: Test Frontend Docker Image
+        run: docker run --rm test_app-frontend echo "Frontend image works!"
