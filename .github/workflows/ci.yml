@@ -1,0 +1,39 @@
+name: CI Build Docker Containers
+
+# When to run this workflow
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout your code
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Build backend Docker image
+      - name: Build Backend Docker Image
+        run: docker build -t test_app-backend ./backend
+
+      # Step 4: Build frontend Docker image
+      - name: Build Frontend Docker Image
+        run: docker build -t test_app-frontend ./frontend
+
+      # Step 5: Test backend image (optional)
+      - name: Run Backend Container
+        run: docker run --rm test_app-backend uvicorn main:app --host 0.0.0.0 --port 8000
+
+      # Step 6: Test frontend image (optional)
+      - name: Run Frontend Container
+        run: docker run --rm -p 3000:80 test_app-frontend
